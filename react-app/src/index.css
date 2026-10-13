@@ -1,0 +1,278 @@
+@tailwind base;
+@tailwind components;
+/* stylelint-disable-next-line at-rule-no-unknown */
+@tailwind utilities;
+
+/* ============ 全局基础 ============ */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  @apply text-gray-800 antialiased;
+}
+
+/* ============ 自定义滚动条 ============ */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+::-webkit-scrollbar-thumb {
+  background: #c7c7cc;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+/* ============ 壁纸瀑布流容器 ============ */
+/* 改用 JS 计算的瀑布流：每张图加到最矮列，避免 CSS columns 重新平衡导致的位置错乱 */
+/* 容器是 flex 横向布局，每列内 flex-direction column，间距用 gap-5 (1.25rem) */
+
+/* ============ 壁纸卡片 ============ */
+.wallpaper-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.4s ease;
+}
+
+.wallpaper-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 35px -10px rgba(99, 102, 241, 0.3);
+}
+
+.wallpaper-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.6s ease;
+}
+
+.wallpaper-card:hover img {
+  transform: scale(1.08);
+}
+
+/* 卡片悬浮遮罩 */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.2) 40%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.wallpaper-card:hover .card-overlay {
+  opacity: 1;
+}
+
+/* 分类标签 */
+.card-tag {
+  align-self: flex-start;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 999px;
+}
+
+/* 卡片底部信息 */
+.card-info {
+  color: #fff;
+  transform: translateY(10px);
+  opacity: 0;
+  transition: all 0.4s ease 0.05s;
+}
+
+.wallpaper-card:hover .card-info {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 下载按钮 */
+.download-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+}
+
+.wallpaper-card:hover .download-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.download-btn:hover {
+  background: #6366f1;
+}
+
+/* ============ 模态框动画 ============ */
+.modal-enter {
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-img-enter {
+  animation: zoomIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ============ 卡片入场动画 ============ */
+.wallpaper-card {
+  animation: cardEnter 0.5s ease backwards;
+}
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============ Hero 文字闪烁 ============ */
+.text-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    #ff0040 0%,    /* 红 */
+    #ff8c00 14%,   /* 橙 */
+    #ffed00 28%,   /* 黄 */
+    #00ff64 42%,   /* 绿 */
+    #00d4ff 56%,   /* 青 */
+    #0066ff 70%,   /* 蓝 */
+    #8a2be2 84%,   /* 紫 */
+    #ff0040 100%   /* 回到红，循环 */
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: rgb-flow 4s linear infinite;
+}
+
+@keyframes rgb-flow {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* ============ Hero 背景图片墙横向滚动 ============ */
+.hero-marquee-track {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  /* 从左往右无限滚动：translateX(-50%) 刚好走完一份列表长度 */
+  animation: hero-marquee 40s linear infinite;
+  /* ===== 60fps 性能优化 ===== */
+  /* 只给整个 track 一层合成层，所有图片共享这一层 */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+  /* 限制 track 内部的 layout/paint 范围，避免影响外部 */
+  contain: layout paint;
+}
+
+.hero-marquee-track:hover {
+  /* 鼠标悬停时暂停，方便看清图片 */
+  animation-play-state: paused;
+}
+
+.hero-marquee-item {
+  flex-shrink: 0;
+  width: 240px;
+  height: 100%;
+  overflow: hidden;
+  /* 每个 item 内部独立隔离，屏幕外的不重绘 */
+  contain: layout paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 240px 180px;
+}
+
+.hero-marquee-item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 不给每个 img 单独设 will-change/translateZ：
+     24 个独立合成层会大量消耗 GPU 内存反而掉帧，
+     让它们共享 track 那一层合成 */
+}
+
+/* 用 translate3d 替代 translateX，强制走 GPU 合成 */
+@keyframes hero-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* 移动端：图片小一点、滚得快一点 */
+@media (max-width: 768px) {
+  .hero-marquee-item {
+    width: 200px;
+    contain-intrinsic-size: 200px 150px;
+  }
+  .hero-marquee-track {
+    animation-duration: 30s;
+  }
+}
+
+/* 尊重用户偏好：减少动画 */
+@media (prefers-reduced-motion: reduce) {
+  .hero-marquee-track {
+    animation: none;
+  }
+}
